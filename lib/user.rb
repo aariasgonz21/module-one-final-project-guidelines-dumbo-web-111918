@@ -18,10 +18,13 @@ class User < ActiveRecord::Base
 
 # returns an array of the users favorite quote content
   def favorite_strings
-    self.favorites.map do |favorite|
-      favorite.quote.quote
+    self.favorites.map.with_index do |favorite, index|
+     #binding.pry
+      "#{index+1}" +(". ") + favorite.quote.quote + ("\nArtist: ")  + favorite.quote.author + ("\nCategory: ") + favorite.quote.category + (" \n\n")
+      # favorite.quote.quote
     end
  end
+
 
 
 end

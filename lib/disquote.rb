@@ -2,6 +2,7 @@ $prompt = TTY::Prompt.new
 
 #------------------------Welcome Screen-----------------#
 def screen1
+  system "clear"
   puts ""
   @screen1 = [
     {"Login" => -> do login end},
@@ -14,6 +15,7 @@ end
 #--------------------Register Screen--------------------#
 
  def register
+   system "clear"
    @fullname = $prompt.ask("Please enter your full name:") do |q|
      q.required true
    end
@@ -49,6 +51,7 @@ def usernames
 end
 
 def login
+  system "clear"
   usernames
 
   #asking username
@@ -81,15 +84,22 @@ end
 
 #--------------------Home Screen----------------------#
 def home
+  system "clear"
   @home = [
     {"Help" => -> do help end},
     {"View List" => -> do view_list end},
     {"Search" => -> do search end},
-    {"Log Out" => -> do screen1 end},
+    {"Log Out" => -> do exit_screen end},
+
   ]
   $prompt.select("---------------------------Main Menu--------------------------\n", @home)
 end
 
+#---------------------rating exit screen--------------------#
+def exit_screen
+  system "clear"
+slider
+end
 #-------------------Buttons-----------------#
 def go_back(string="")
   @go_back = [{"Go Back" => -> do home end}]
@@ -111,6 +121,7 @@ end
 #----------------------Pages-------------------------#
 
 def help
+  system "clear"
   help = <<-HELP
   What Each Command Option Means:
   -- help : displays this help message
@@ -149,108 +160,144 @@ def help
 end
 
 def view_list
-#  binding.pry
-
+#binding.pry
+system "clear"
+@user.reload
   puts "Your Favorite Quotes: "
-  puts @user.favorite_strings
-
-  @user.reload
-
+  @user.favorite_strings.each do |quote|
+    #binding.pry
+    puts quote
+  end
   if @user.favorites == []
+    system "clear"
     go_back("You don't have any quotes yet. Search for some quotes to add!")
   end
-
   @view_list = [
     {"Go Back" => -> do home end},
     {"Add to List" => -> do search end},
     {"Create Quote to List" => -> do create_quote end},
-    {"Delete from List" => -> do delete_quote end}
+    {"Delete from List" => -> do delete_quote end},
+    {"Log Out" => -> do exit_screen end},
   ]
   $prompt.select("",@view_list)
 end
 
 
 def search
+  system "clear"
   puts "Would you like to search by category or all"
   @search_options = [
     {"Categories" => -> do search_by_category end},
     {"All" => -> do search_all end},
-    {"Go Back" => -> do home end}
+    {"Go Back" => -> do home end},
+    {"Log Out" => -> do exit_screen end},
   ]
-
   $prompt.select("", @search_options)
-
 end
 
 def search_by_category
+system "clear"
 #binding.pry
-@selection = [
-  {Quote.categories[0] => -> do funny_quotes end},
-  {Quote.categories[1] => -> do motivational_quotes end},
-  {Quote.categories[2] => -> do depressing_quotes end},
-  {Quote.categories[3] => -> do love_quotes end},
-  {Quote.categories[4] => -> do friendship_quotes end}
-
-]
-
-$prompt.select("Choose your category?", @selection)
-  # elsif @selection == "funny"
-  #   funny_quotes
+  @selection = [
+    {Quote.categories[0] => -> do funny_quotes end},
+    {Quote.categories[1] => -> do motivational_quotes end},
+    {Quote.categories[2] => -> do depressing_quotes end},
+    {Quote.categories[3] => -> do love_quotes end},
+    {Quote.categories[4] => -> do friendship_quotes end}
+  ]
+  $prompt.select("Choose your category?", @selection)
 end
-
 
 #----------------------------Functionalities--------------------#
 
 def create_quote
-  @make_ur_own = $prompt.ask("Enter your quote: ")
-  Favorite.create(user_id: @user.id, quote_id: @make_ur_own)
-  puts "Added to List!"
-  view_list
+  system "clear"
+  quote_cont = $prompt.ask("Enter your quote content")
+  quote_author = $prompt.ask("Enter your quote author")
+  quote_category = $prompt.select("Choose your category?", Quote.categories)
+
+  puts ("Content: ") + quote_cont + (" -- ") +("Author: ") +  quote_author + (" -- ") +("Category: ") + quote_category
+aa = $prompt.yes?("Is this quote?")
+
+ if aa
+  system "clear"
+  Quote.create(quote: quote_cont, author: quote_author, category: quote_category)
+  @view_list = [
+    {"Go Back" => -> do home end},
+    {"Add to List" => -> do search end},
+    {"Create Quote to List" => -> do create_quote end},
+    {"Delete from List" => -> do delete_quote end},
+    {"Log Out" => -> do exit_screen end},
+  ]
+  $prompt.select("",@view_list)
+else
+  system "clear"
+@mistake = [
+  {"Go Back" => -> do create_quote end},
+  {"Go Home" => -> do home end},
+  {"View list" => -> do view_list end},
+  {"Search Quotes" => -> do search_by_category end},
+  {"Log Out" => -> do exit_screen end},
+]
+$prompt.select("Mistakes happen!!! What now?!?!", @mistake)
+  end
 end
 
 def delete_quote
+  system "clear"
   choices = (@user.favorite_strings.map{|favorite| favorite})
   del_arr = $prompt.select("Which quote would you like to delete?", choices)
-  #binding.pry
 
-@user.favorites.select do |favorite|
-  favorite.quote.quote == del_arr
-  favorite.destroy
+  favorite_to_delete = @user.favorites.detect do |favorite|
+    del_arr.include?(favorite.quote.quote)
+  end
 
-  #binding.pry
-
-
+  aa= $prompt.yes?('Are you sure you want to delete?')
+  if aa == true
+    favorite_to_delete.destroy
+    @user.reload
+    view_list
+  else
+    puts "Okay no problem! We all make mistakes!"
+    go_back
+  end
 end
-end
 
+def slider
+  system "clear"
+  aa = $prompt.slider("Rate our app before you go?", max:10)
+  if aa < 5
+    puts ("Wow! Only a #{aa}!!! That's terrible we worked so hard!")
+  elsif aa > 5 && aa != 10
+    puts("A #{aa}? I guess thats not so bad..")
+  else
+    puts ("A #{aa}!!! Thats a perfect score! You're Awesome!")
+  end
+end
 
 #------------------categories------------------#
+# def choice_and_back(quote_category)
+#   choice_and_back = [
+#     Quote.quote_category.map{|quote| quote.to_tty_hash},
+#     {"Go Back" => -> do search_by_category end}
+#   ]
+# end
+
   def motivational_quotes
+    system "clear"
     choice_and_back = [
       Quote.motivational_category.map{|quote| quote.to_tty_hash},
       {"Go Back" => -> do search_by_category end}
     ]
   @choice_result_2 =
-      $prompt.select("Which quote would you like to add?", choice_and_back)
-      # do |menu|
-      # menu.choice "There's enough money for everybody. See, I can't do what Yachty does. But then again, Yachty can't do what I do."
-      # menu.choice "Fear is stupid. So are regrets"
-      # menu.choice "I'm a good man, and I'm gonna become a better man"
-    # end
-    #binding.pry
+    $prompt.select("Which quote would you like to add?", choice_and_back)
     Favorite.create(user_id: @user.id, quote_id: @choice_result_2)
     puts "Added to List!"
     view_list
   end
 
-  def choice_and_back(quote_category)
-    choice_and_back = [
-      Quote.quote_category.map{|quote| quote.to_tty_hash},
-      {"Go Back" => -> do search_by_category end}
-    ]
-  end
-
   def funny_quotes
+    system "clear"
     choice_and_back = [
       Quote.funny_category.map{|quote| quote.to_tty_hash},
       {"Go Back" => -> do search_by_category end}
@@ -263,6 +310,7 @@ end
   end
 
   def love_quotes
+    system "clear"
     choice_and_back = [
       Quote.love_category.map{|quote| quote.to_tty_hash},
       {"Go Back" => -> do search_by_category end}
@@ -275,6 +323,7 @@ end
   end
 
   def friendship_quotes
+    system "clear"
     choice_and_back = [
       Quote.friendship_category.map{|quote| quote.to_tty_hash},
       {"Go Back" => -> do search_by_category end}
@@ -292,6 +341,7 @@ end
       {"Go Back" => -> do search_by_category end}
     ]
   @choice_result_6 =
+  system "clear"
       $prompt.select("Which quote would you like to add?", choice_and_back)
     Favorite.create(user_id: @user.id, quote_id: @choice_result_6)
     puts "Added to List!"

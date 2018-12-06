@@ -2,6 +2,10 @@ class Quote < ActiveRecord::Base
   has_many :favorites
   has_many :users, through: :favorites
 
+  def to_tty_hash
+    {self.quote =>self.id}
+  end
+
   def self.motivational_category
     self.all.where(category: "motivational")
     # self.all.select do |quote|
