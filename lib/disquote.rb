@@ -149,10 +149,11 @@ def help
 end
 
 def view_list
-  binding.pry
+#  binding.pry
 
   puts "Your Favorite Quotes: "
-  puts @user.quote_strings
+  puts @user.favorite_strings
+
   @user.reload
 
   if @user.favorites == []
@@ -208,10 +209,18 @@ def create_quote
 end
 
 def delete_quote
-  binding.pry
-  #choices
-  prompt.multi_select()
+  choices = (@user.favorite_strings.map{|favorite| favorite})
+  del_arr = $prompt.select("Which quote would you like to delete?", choices)
+  #binding.pry
 
+@user.favorites.select do |favorite|
+  favorite.quote.quote == del_arr
+  favorite.destroy
+
+  #binding.pry
+
+
+end
 end
 
 

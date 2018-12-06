@@ -1,16 +1,13 @@
 class Quote < ActiveRecord::Base
-  has_many :users, through: :favorites
   has_many :favorites
-
-  def to_tty_hash
-    {self.quote => self.id}
-  end
+  has_many :users, through: :favorites
 
   def self.motivational_category
-    self.all.select do |quote|
-      quote.category == "motivational"
-      #binding.pry
-    end
+    self.all.where(category: "motivational")
+    # self.all.select do |quote|
+    #   quote.category == "motivational"
+    #   #binding.pry
+    # end
   end
 
   def self.funny_category
@@ -28,6 +25,13 @@ class Quote < ActiveRecord::Base
   def self.depressing_category
     self.all.select do |quote|
       quote.category == "depressing"
+      #binding.pry
+    end
+  end
+
+  def self.love_category
+    self.all.select do |quote|
+      quote.category == "love"
       #binding.pry
     end
   end

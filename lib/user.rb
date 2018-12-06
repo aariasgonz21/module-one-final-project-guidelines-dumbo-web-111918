@@ -16,9 +16,12 @@ class User < ActiveRecord::Base
     end
   end
 
+# returns an array of the users favorite quote content
   def favorite_strings
-    favorites.map do |favorite|
-      favorite.quote_id
+    self.favorites.map do |favorite|
+      favorite.quote.quote
     end
-  end
+ end
+
+
 end
