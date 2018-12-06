@@ -6,4 +6,3 @@ home
 
 #binding.pry
 #binding.pry
-puts "HELLO WORLD"

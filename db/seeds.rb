@@ -3,7 +3,7 @@ Quote.destroy_all
 
 User.create(username: "kikidunzz")
 User.create(username: "aariasgonz")
-bigboi = User.create(username: "bigboiii3")
+User.create(username: "bigboiii3")
 User.create(username: "avocadotoast2")
 User.create(username: "yerrrrrr")
 
@@ -19,7 +19,7 @@ Quote.create(quote: "I'm a good man, and I'm gonna become a better man", author:
 Quote.create(quote: "I didn't know love until I had my daughter. I didn't know its bounds", author:"Chance the Rapper", category:"love")
 Quote.create(quote: "Walking with a friend in the dark is better than walking alone in the light", author:"Helen Keller", category:"friendship")
 Quote.create(quote: "Do I not destroy my enemies when I make them my friends?", author:"Abraham Lincoln", category:"friendship")
-Quote.create(quote: "I don't fear death so much as I fear its prologues: loneliness, decrepitude, pain, debilitation, depression, senility. After a few years of those, I imagine death presents like a holiday at the beach", author:"Mary Roach", category:"depression")
+Quote.create(quote: "I don't fear death so much as I fear its prologues: loneliness, decrepitude, pain, debilitation, depression, senility. After a few years of those, I imagine death presents like a holiday at the beach", author:"Mary Roach", category:"depressing")
 
 Favorite.create(user_id: 3, quote_id: 3)
 Favorite.create(user_id: 3, quote_id: 2)
