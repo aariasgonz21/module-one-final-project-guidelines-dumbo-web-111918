@@ -10,4 +10,9 @@ class User < ActiveRecord::Base
   # def quotes
   #   self.favorites.map {|favorite| Quote.find(favorite.quote_id) }
   # end
+  def quote_strings
+    quotes.map do |quote|
+      [quote.quote,  quote.author, quote.category].join("-----")
+    end
+  end
 end
