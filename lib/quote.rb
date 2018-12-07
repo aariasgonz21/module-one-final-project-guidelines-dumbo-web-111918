@@ -3,7 +3,7 @@ class Quote < ActiveRecord::Base
   has_many :users, through: :favorites
 
   def to_tty_hash
-    {self.quote =>self.id}
+    {self.quote + ("\n") + self.author + ("\n") => self.id}
   end
 
   def self.motivational_category
@@ -45,4 +45,11 @@ class Quote < ActiveRecord::Base
         quote.category
      end.uniq
    end
+
+  def self.all_quotes
+    self.all.select do |quote|
+      #  quote.quote + ("\n") + quote.author + ("\n")
+      quote.to_tty_hash
+     end
+  end
 end

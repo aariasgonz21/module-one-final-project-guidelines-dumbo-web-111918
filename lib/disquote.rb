@@ -3,7 +3,6 @@ $prompt = TTY::Prompt.new
 #------------------------Welcome Screen-----------------#
 def screen1
   system "clear"
-  puts ""
   @screen1 = [
     {"Login" => -> do login end},
     {"Register" => -> do register end},
@@ -206,6 +205,22 @@ system "clear"
     {Quote.categories[4] => -> do friendship_quotes end}
   ]
   $prompt.select("Choose your category?", @selection)
+  #go_back
+end
+
+def search_all
+#binding.pry
+  choice_and_back = [
+    Quote.all_quotes,
+    {"Go Back" => -> do search_by_category end}
+  ]
+@choice_result_7 =
+  $prompt.select("Which quote would you like to add?", choice_and_back)
+  Favorite.create(user_id: @user.id, quote_id: @choice_result_7)
+  puts "Added to List!"
+  view_list
+
+
 end
 
 #----------------------------Functionalities--------------------#
@@ -267,11 +282,14 @@ def slider
   system "clear"
   aa = $prompt.slider("Rate our app before you go?", max:10)
   if aa < 5
-    puts ("Wow! Only a #{aa}!!! That's terrible we worked so hard!")
+    $prompt.ask("wow ok what did we do to you?: ")
+    puts "Thanks for your imput~"
   elsif aa > 5 && aa != 10
-    puts("A #{aa}? I guess thats not so bad..")
+    $prompt.ask("Odd flex but ok. Tell us more: ")
+    puts "Thanks for your imput~"
   else
-    puts ("A #{aa}!!! Thats a perfect score! You're Awesome!")
+    $prompt.ask("Lit(erature)! ha. Tell us more: ")
+    puts "Thanks for your imput~"
   end
 end
 
