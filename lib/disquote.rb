@@ -1,20 +1,28 @@
 $prompt = TTY::Prompt.new
+$pastel= Pastel.new
+$font = TTY::Font.new(:doom)
 
 #------------------------Welcome Screen-----------------#
 def screen1
   system "clear"
+  #font = TTY::Font.new(:rockwell)
+  puts $pastel.magenta.on_cyan.bold("Disquote: Helping you find dis quote!\n")
+  puts $font.write("Disquote")
   @screen1 = [
     {"Login" => -> do login end},
     {"Register" => -> do register end},
     {"Exit" => -> do exit end}
   ]
-  $prompt.select("Disquote: Helping you find this quote!\n", @screen1)
+  $prompt.select("", @screen1)
 end
 
 #--------------------Register Screen--------------------#
 
  def register
    system "clear"
+   puts $pastel.magenta.on_cyan.bold("Disquote: Helping you find dis quote!\n")
+   puts $font.write("Disquote")
+
    @fullname = $prompt.ask("Please enter your full name:") do |q|
      q.required true
    end
@@ -84,6 +92,8 @@ end
 #--------------------Home Screen----------------------#
 def home
   system "clear"
+  puts $pastel.magenta.on_cyan.bold("Disquote: Helping you find dis quote!\n")
+  puts $font.write("Disquote")
   @home = [
     {"Help" => -> do help end},
     {"View List" => -> do view_list end},
@@ -161,6 +171,8 @@ end
 def view_list
 #binding.pry
 system "clear"
+puts $pastel.magenta.on_cyan.bold("Disquote: Helping you find dis quote!\n")
+puts $font.write("Disquote")
 @user.reload
   puts "Your Favorite Quotes: "
   @user.favorite_strings.each do |quote|
@@ -184,10 +196,11 @@ end
 
 def search
   system "clear"
-  puts "Would you like to search by category or all"
+  puts $pastel.magenta.on_cyan.bold("Disquote: Helping you find dis quote!\n")
+  puts $font.write("Disquote")
+  puts "Search by Catgory"
   @search_options = [
     {"Categories" => -> do search_by_category end},
-    {"All" => -> do search_all end},
     {"Go Back" => -> do home end},
     {"Log Out" => -> do exit_screen end},
   ]
@@ -196,6 +209,8 @@ end
 
 def search_by_category
 system "clear"
+puts $pastel.magenta.on_cyan.bold("Disquote: Helping you find dis quote!\n")
+puts $font.write("Disquote")
 #binding.pry
   @selection = [
     {Quote.categories[0] => -> do funny_quotes end},
@@ -208,25 +223,12 @@ system "clear"
   #go_back
 end
 
-def search_all
-#binding.pry
-  choice_and_back = [
-    Quote.all_quotes,
-    {"Go Back" => -> do search_by_category end}
-  ]
-@choice_result_7 =
-  $prompt.select("Which quote would you like to add?", choice_and_back)
-  Favorite.create(user_id: @user.id, quote_id: @choice_result_7)
-  puts "Added to List!"
-  view_list
-
-
-end
-
 #----------------------------Functionalities--------------------#
 
 def create_quote
   system "clear"
+  puts $pastel.magenta.on_cyan.bold("Disquote: Helping you find dis quote!\n")
+  puts $font.write("Disquote")
   quote_cont = $prompt.ask("Enter your quote content")
   quote_author = $prompt.ask("Enter your quote author")
   quote_category = $prompt.select("Choose your category?", Quote.categories)
@@ -259,6 +261,8 @@ $prompt.select("Mistakes happen!!! What now?!?!", @mistake)
 end
 
 def delete_quote
+  puts $pastel.magenta.on_cyan.bold("Disquote: Helping you find dis quote!\n")
+  puts $font.write("Disquote")
   system "clear"
   choices = (@user.favorite_strings.map{|favorite| favorite})
   del_arr = $prompt.select("Which quote would you like to delete?", choices)
@@ -279,18 +283,23 @@ def delete_quote
 end
 
 def slider
+
+
   system "clear"
+  puts $pastel.magenta.on_cyan.bold("Disquote: Helping you find dis quote!\n")
+  puts $font.write("Disquote")
   aa = $prompt.slider("Rate our app before you go?", max:10)
   if aa < 5
     $prompt.ask("wow ok what did we do to you?: ")
-    puts "Thanks for your imput~"
+    puts "Thanks for your input~"
   elsif aa > 5 && aa != 10
     $prompt.ask("Odd flex but ok. Tell us more: ")
-    puts "Thanks for your imput~"
+    puts "Thanks for your input~"
   else
     $prompt.ask("Lit(erature)! ha. Tell us more: ")
-    puts "Thanks for your imput~"
+    puts "Thanks for your input~"
   end
+  exit
 end
 
 #------------------categories------------------#
